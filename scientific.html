@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Scientific Calculator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;700&display=swap');
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    max-width: 350px;
+    height: 600px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+  header {
+    background-color: #1f1f1f;
+    padding: 18px 0;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #00e676;
+  }
+  #calculator {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #1e1e1e;
+    padding: 15px;
+  }
+  #display {
+    background-color: #000;
+    color: #00e676;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 2rem;
+    height: 60px;
+    border-radius: 12px;
+    padding: 10px 15px;
+    text-align: right;
+    overflow-x: auto;
+    white-space: nowrap;
+    user-select: text;
+  }
+  #buttons {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 10px;
+    margin-top: 15px;
+    flex-grow: 1;
+  }
+  button {
+    background-color: #272727;
+    border: none;
+    border-radius: 10px;
+    color: #00e676;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover, button:focus {
+    background-color: #00e676;
+    color: #121212;
+    outline: none;
+  }
+  button.operator {
+    background-color: #004d40;
+  }
+  button.operator:hover, button.operator:focus {
+    background-color: #26a69a;
+    color: #121212;
+  }
+  button.function {
+    background-color: #004d40;
+  }
+  button.function:hover, button.function:focus {
+    background-color: #26a69a;
+    color: #121212;
+  }
+  button.equal {
+    background-color: #00e676;
+    color: #121212;
+    grid-column: span 2;
+  }
+  button.equal:hover, button.equal:focus {
+    background-color: #00b24d;
+    color: white;
+  }
+  button.clear {
+    background-color: #b00020;
+  }
+  button.clear:hover, button.clear:focus {
+    background-color: #e53935;
+    color: white;
+  }
+  @media (max-width: 350px) {
+    body {
+      max-width: 100vw;
+      height: 100vh;
+    }
+    #display {
+      font-size: 1.6rem;
+      height: 55px;
+    }
+    button {
+      font-size: 1rem;
+      padding: 12px 0;
+    }
+  }
+</style>
+</head>
+<body>
+<header>Scientific Calculator</header>
+<div id="calculator" role="application" aria-label="Scientific calculator">
+  <div id="display" role="textbox" aria-live="polite" aria-atomic="true" aria-label="Calculator display" tabindex="0">0</div>
+  <div id="buttons">
+    <!-- Row 1 -->
+    <button type="button" class="clear" aria-label="Clear all" id="clear">C</button>
+    <button type="button" class="operator" aria-label="Backspace" id="backspace">⌫</button>
+    <button type="button" class="operator" data-value="(" aria-label="Open parenthesis">(</button>
+    <button type="button" class="operator" data-value=")" aria-label="Close parenthesis">)</button>
+    <button type="button" class="function" data-func="sin" aria-label="Sine function">sin</button>
+    <button type="button" class="function" data-func="cos" aria-label="Cosine function">cos</button>
+
+    <!-- Row 2 -->
+    <button type="button" class="function" data-func="tan" aria-label="Tangent function">tan</button>
+    <button type="button" class="function" data-func="asin" aria-label="Inverse sine">asin</button>
+    <button type="button" class="function" data-func="acos" aria-label="Inverse cosine">acos</button>
+    <button type="button" class="function" data-func="atan" aria-label="Inverse tangent">atan</button>
+    <button type="button" class="function" data-func="log10" aria-label="Log base 10">log</button>
+    <button type="button" class="function" data-func="ln" aria-label="Natural logarithm">ln</button>
+
+    <!-- Row 3 -->
+    <button type="button" data-value="7" aria-label="7">7</button>
+    <button type="button" data-value="8" aria-label="8">8</button>
+    <button type="button" data-value="9" aria-label="9">9</button>
+    <button type="button" class="operator" data-value="/" aria-label="Divide">÷</button>
+    <button type="button" class="function" data-func="sqrt" aria-label="Square root">√</button>
+    <button type="button" class="function" data-func="exp" aria-label="Exponent">exp</button>
+
+    <!-- Row 4 -->
+    <button type="button" data-value="4" aria-label="4">4</button>
+    <button type="button" data-value="5" aria-label="5">5</button>
+    <button type="button" data-value="6" aria-label="6">6</button>
+    <button type="button" class="operator" data-value="*" aria-label="Multiply">×</button>
+    <button type="button" data-value="^" aria-label="Power">^</button>
+    <button type="button" class="function" data-func="factorial" aria-label="Factorial">x!</button>
+
+    <!-- Row 5 -->
+    <button type="button" data-value="1" aria-label="1">1</button>
+    <button type="button" data-value="2" aria-label="2">2</button>
+    <button type="button" data-value="3" aria-label="3">3</button>
+    <button type="button" class="operator" data-value="-" aria-label="Subtract">−</button>
+    <button type="button" data-value="pi" aria-label="Pi constant">π</button>
+    <button type="button" data-value="e" aria-label="Euler's number">e</button>
+
+    <!-- Row 6 -->
+    <button type="button" data-value="0" aria-label="0" style="grid-column: span 2;">0</button>
+    <button type="button" data-value="." aria-label="Decimal point">.</button>
+    <button type="button" class="operator" data-value="+" aria-label="Add">+</button>
+    <button type="button" class="equal" id="equals" aria-label="Equals">=</button>
+  </div>
+</div>
+
+<script>
+  const displayEl = document.getElementById('display');
+  const buttons = document.querySelectorAll('#buttons button');
+  let expression = '';
+
+  // Helper: factorial function
+  function factorial(n) {
+    if (n < 0) return NaN;
+    if (n === 0 || n === 1) return 1;
+    let f = 1;
+    for(let i=2; i<=n; i++) f*=i;
+    return f;
+  }
+
+  // Replace constants and functions in expression for evaluation
+  function prepareExpression(expr) {
+    // Replace pi and e
+    expr = expr.replace(/pi/g, Math.PI.toString());
+    expr = expr.replace(/e/g, Math.E.toString());
+    // Replace power operator '^' with '**'
+    expr = expr.replace(/\^/g, '**');
+    // Replace factorial notation e.g. 5! with factorial(5)
+    expr = expr.replace(/(\d+|\([^()]+\))\!/g, (_, val) => `factorial(${val})`);
+    return expr;
+  }
+
+  // Function maps for scientific functions
+  function evaluateFunction(func, val) {
+    switch (func) {
+      case 'sin': return Math.sin(val);
+      case 'cos': return Math.cos(val);
+      case 'tan': return Math.tan(val);
+      case 'asin': return Math.asin(val);
+      case 'acos': return Math.acos(val);
+      case 'atan': return Math.atan(val);
+      case 'log10': return Math.log10(val);
+      case 'ln': return Math.log(val);
+      case 'exp': return Math.exp(val);
+      case 'sqrt': return Math.sqrt(val);
+      case 'factorial': return factorial(val);
+      default: return NaN;
+    }
+  }
+
+  // Evaluate expression safely
+  function evaluateExpression(expr) {
+    // Insert factorial helper in function scope
+    const factorial = n => {
+      if (n < 0) return NaN;
+      if (n === 0 || n === 1) return 1;
+      let f = 1;
+      for(let i=2; i<=n; i++) f*=i;
+      return f;
+    };
+    try {
+      // Evaluate JS expression with Math functions, but first replace scientific functions calls manually
+      // We'll parse functions calls like sin(...), cos(...), etc and replace with numeric values
+      // This will require repeatedly searching for function calls and evaluating argument recursively.
+
+      // Recursive evaluation function
+      function recursiveEval(s) {
+        // Handle functions
+        const funcRegex = /\b(sin|cos|tan|asin|acos|atan|log10|ln|exp|sqrt|factorial)\(([^()]+|(?R))*\)/g;
+        if(!funcRegex.test(s)) {
+          // No function calls
+          return Function('"use strict";return (' + s + ')')();
+        }
+        s = s.replace(funcRegex, (match, func, arg) => {
+          const val = recursiveEval(arg);
+          return evaluateFunction(func, val);
+        });
+        return recursiveEval(s);
+      }
+
+      const prepared = prepareExpression(expr);
+      const result = recursiveEval(prepared);
+      if (typeof result === 'number' && isFinite(result)) {
+        return result;
+      } else {
+        return 'Error';
+      }
+    } catch {
+      return 'Error';
+    }
+  }
+
+  function updateDisplay() {
+    displayEl.textContent = expression || '0';
+  }
+
+  // Button event listener
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const val = button.getAttribute('data-value');
+      const func = button.getAttribute('data-func');
+      if (button.id === 'clear') {
+        expression = '';
+        updateDisplay();
+        return;
+      }
+      if (button.id === 'backspace') {
+        expression = expression.slice(0, -1);
+        updateDisplay();
+        return;
+      }
+      if (button.id === 'equals') {
+        if (expression.trim() === '') return;
+        const res = evaluateExpression(expression);
+        expression = (typeof res === 'number') ? String(res) : res;
+        updateDisplay();
+        return;
+      }
+
+      if (func) {
+        // Add function notation: func(
+        expression += func + '(';
+        updateDisplay();
+        return;
+      }
+
+      // Limit to prevent overflow
+      if (expression.length > 100) return;
+
+      // Append the button value
+      expression += val;
+      updateDisplay();
+    });
+  });
+
+  // Keyboard support
+  window.addEventListener('keydown', (e) => {
+    const validKeys = '0123456789+-*/().^';
+    if (validKeys.includes(e.key)) {
+      expression += e.key;
+      updateDisplay();
+      e.preventDefault();
+    } else if (e.key === 'Enter') {
+      const res = evaluateExpression(expression);
+      expression = (typeof res === 'number') ? String(res) : res;
+      updateDisplay();
+      e.preventDefault();
+    } else if (e.key === 'Backspace') {
+      expression = expression.slice(0, -1);
+      updateDisplay();
+      e.preventDefault();
+    } else if (e.key.toLowerCase() === 'c') {
+      expression = '';
+      updateDisplay();
+      e.preventDefault();
+    }
+  });
+
+  updateDisplay();
+</script>
+</body>
+</html>

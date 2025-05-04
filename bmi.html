@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMR & BMI Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #36d1dc, #5b86e5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      color: #333;
+    }
+    .calculator {
+      background: #ffffffcc;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    .calculator h1 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .calculator input, .calculator select {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .calculator button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .calculator button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>BMR & BMI Calculator</h1>
+    <input type="number" id="weight" placeholder="Weight (kg)">
+    <input type="number" id="height" placeholder="Height (cm)">
+    <input type="number" id="age" placeholder="Age">
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <button onclick="calculateBMRandBMI()">Calculate</button>
+    <div class="result" id="bmrResult"></div>
+    <div class="result" id="bmiResult"></div>
+  </div>
+
+  <script>
+    function calculateBMRandBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const age = parseInt(document.getElementById('age').value);
+      const gender = document.getElementById('gender').value;
+
+      if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+        document.getElementById('bmrResult').textContent = 'Please fill out all fields correctly.';
+        document.getElementById('bmiResult').textContent = '';
+        return;
+      }
+
+      let bmr;
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+
+      const heightInMeters = height / 100;
+      const bmi = weight / (heightInMeters * heightInMeters);
+
+      document.getElementById('bmrResult').textContent = `BMR: ${bmr.toFixed(2)} calories/day`;
+      document.getElementById('bmiResult').textContent = `BMI: ${bmi.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>

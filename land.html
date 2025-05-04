@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Land Measurement Converter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .converter {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+    }
+    input, select {
+      background: #fff;
+      color: #333;
+    }
+    button {
+      background: #ff7e5f;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #eb6841;
+    }
+    .result {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="converter">
+    <h1>Land Measurement Converter</h1>
+    <input type="number" id="landInput" placeholder="Enter value" />
+    <select id="fromUnit">
+      <option value="sqft">Square Feet</option>
+      <option value="sqm">Square Meters</option>
+      <option value="acre">Acre</option>
+      <option value="hectare">Hectare</option>
+      <option value="bigha">Bigha</option>
+    </select>
+    <select id="toUnit">
+      <option value="sqft">Square Feet</option>
+      <option value="sqm">Square Meters</option>
+      <option value="acre">Acre</option>
+      <option value="hectare">Hectare</option>
+      <option value="bigha">Bigha</option>
+    </select>
+    <button onclick="convertLand()">Convert</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const conversionRates = {
+      sqft: 1,
+      sqm: 10.7639,
+      acre: 43560,
+      hectare: 107639,
+      bigha: 27225 // Approximate, varies by region
+    };
+
+    function convertLand() {
+      const input = parseFloat(document.getElementById('landInput').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+
+      if (isNaN(input)) {
+        document.getElementById('result').textContent = 'Please enter a valid number';
+        return;
+      }
+
+      const valueInSqft = input * conversionRates[from];
+      const convertedValue = valueInSqft / conversionRates[to];
+
+      document.getElementById('result').textContent = `${input} ${from} = ${convertedValue.toFixed(4)} ${to}`;
+    }
+  </script>
+</body>
+</html>

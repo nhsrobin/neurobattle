@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Difference Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .date-diff-calculator {
+      background: #ffffffcc;
+      padding: 2rem;
+      margin-right: 5px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+    }
+    .date-diff-calculator h1 {
+      margin-bottom: 1.5rem;
+      font-size: 1.75rem;
+    }
+    .date-diff-calculator input[type="date"] {
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .date-diff-calculator button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #28a745;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .date-diff-calculator button:hover {
+      background: #218838;
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="date-diff-calculator">
+    <h1>Date to Date Difference</h1>
+    <input type="date" id="startDate" placeholder="Start Date">
+    <input type="date" id="endDate" placeholder="End Date">
+    <button onclick="calculateDifference()">Calculate Difference</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateDifference() {
+      const start = new Date(document.getElementById('startDate').value);
+      const end = new Date(document.getElementById('endDate').value);
+
+      if (!start.getTime() || !end.getTime()) {
+        document.getElementById('result').textContent = 'Please select both start and end dates.';
+        return;
+      }
+
+      if (start > end) {
+        document.getElementById('result').textContent = 'Start date must be before end date.';
+        return;
+      }
+
+      let diffTime = Math.abs(end - start);
+      let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      let diffYears = Math.floor(diffDays / 365.25);
+      let remainingDays = diffDays - diffYears * 365.25;
+      let diffMonths = Math.floor(remainingDays / 30.44);
+      remainingDays = Math.floor(remainingDays - diffMonths * 30.44);
+
+      document.getElementById('result').textContent = `Difference: ${diffYears} years, ${diffMonths} months, ${remainingDays} days.`;
+    }
+  </script>
+</body>
+</html>

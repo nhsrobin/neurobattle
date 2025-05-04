@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Basic Calculator with Interactive AI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;700&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: #121212;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+    height: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+  }
+  header {
+    background-color: #1f1f1f;
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #00e676;
+    user-select: none;
+  }
+  main {
+    flex: 1 1 auto;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  main::-webkit-scrollbar {
+    display: none;
+  }
+  main {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #calculator {
+    background: #1f1f1f;
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 0 15px #00e676aa;
+    user-select: none;
+  }
+  #display {
+    font-family: 'Roboto Mono', monospace;
+    background: #000;
+    color: #00e676;
+    text-align: right;
+    font-size: 2.2rem;
+    padding: 15px 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow-wrap: break-word;
+    min-height: 50px;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  button {
+    padding: 15px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background-color: #333;
+    color: #00e676;
+    transition: background-color 0.3s ease;
+  }
+  button:hover, button:focus {
+    background-color: #00e676;
+    color: #121212;
+    outline: none;
+  }
+  button.operator {
+    background-color: #007f5f;
+  }
+  button.operator:hover, button.operator:focus {
+    background-color: #00e676;
+    color: #121212;
+  }
+  button.clear {
+    background-color: #b00020;
+  }
+  button.clear:hover, button.clear:focus {
+    background-color: #ff0033;
+    color: #fff;
+  }
+  #ai-container {
+    margin-top: 20px;
+    background: #1f1f1f;
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 0 15px #006633aa;
+    display: flex;
+    flex-direction: column;
+  }
+  #ai-input {
+    background: #000;
+    color: #00e676;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #00e676;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    outline: none;
+  }
+  #ai-input::placeholder {
+    color: #555;
+  }
+  #ai-button {
+    align-self: flex-end;
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #006633;
+    color: #00e676;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #ai-button:hover, #ai-button:focus {
+    background-color: #00e676;
+    color: #121212;
+    outline: none;
+  }
+  #ai-response {
+    margin-top: 12px;
+    min-height: 38px;
+    color: #00e676;
+    font-family: 'Roboto Mono', monospace;
+    white-space: pre-wrap;
+    user-select: text;
+  }
+  @media (max-width: 350px) {
+    body {
+      max-width: 100vw;
+      height: 100vh;
+    }
+    button {
+      font-size: 1.1rem;
+      padding: 12px;
+    }
+    #display {
+      font-size: 1.8rem;
+      min-height: 45px;
+    }
+    #ai-input {
+      font-size: 0.9rem;
+      padding: 8px 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>Calculator & AI Assistant</header>
+<main>
+  <section id="calculator" aria-label="Basic calculator">
+    <div id="display" role="textbox" aria-live="polite" aria-label="Calculation display">0</div>
+    <div class="buttons" role="group" aria-label="Calculator buttons">
+      <button type="button" class="clear" aria-label="Clear" id="btn-clear">AC</button>
+      <button type="button" class="operator" aria-label="Divide" data-value="/">÷</button>
+      <button type="button" class="operator" aria-label="Multiply" data-value="*">×</button>
+      <button type="button" class="operator" aria-label="Subtract" data-value="-">−</button>
+
+      <button type="button" data-value="7">7</button>
+      <button type="button" data-value="8">8</button>
+      <button type="button" data-value="9">9</button>
+      <button type="button" class="operator" aria-label="Add" data-value="+">+</button>
+
+      <button type="button" data-value="4">4</button>
+      <button type="button" data-value="5">5</button>
+      <button type="button" data-value="6">6</button>
+      <button type="button" data-value="(" aria-label="Left parenthesis">(</button>
+
+      <button type="button" data-value="1">1</button>
+      <button type="button" data-value="2">2</button>
+      <button type="button" data-value="3">3</button>
+      <button type="button" data-value=")" aria-label="Right parenthesis">)</button>
+
+      <button type="button" data-value="0" style="grid-column: span 2;">0</button>
+      <button type="button" data-value=".">.</button>
+      <button type="button" id="btn-equal" aria-label="Equals">=</button>
+    </div>
+  </section>
+
+  <section id="ai-container" aria-label="AI calculator assistant">
+    <label for="ai-input" style="color:#00e676;font-weight:700;">Ask the AI</label>
+    <input type="text" id="ai-input" placeholder="e.g. Add 25 and 17" aria-describedby="ai-desc" />
+    <button type="button" id="ai-button" aria-label="Calculate by AI">Calculate</button>
+    <div id="ai-response" role="region" aria-live="polite" aria-atomic="true"></div>
+  </section>
+</main>
+
+<script>
+  const displayEl = document.getElementById('display');
+  let currentInput = '0';
+
+  function updateDisplay() {
+    displayEl.textContent = currentInput;
+  }
+
+  // Add click listeners for buttons
+  document.querySelectorAll('#calculator button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-value');
+      if (btn.id === 'btn-clear') {
+        currentInput = '0';
+        updateDisplay();
+        return;
+      }
+      if (btn.id === 'btn-equal') {
+        evaluateExpression();
+        return;
+      }
+      if (!val) return;
+
+      if (currentInput === '0') {
+        currentInput = val;
+      } else {
+        currentInput += val;
+      }
+      updateDisplay();
+    });
+  });
+
+  // Evaluate the math expression safely
+  function evaluateExpression() {
+    try {
+      // Basic validation to allow only numbers, operators and parentheses
+      if (!/^[0-9+\-*/().\s]+$/.test(currentInput)) {
+        displayEl.textContent = 'Error: Invalid input';
+        return;
+      }
+      // Use Function constructor for evaluation instead of eval
+      const result = new Function('return ' + currentInput)();
+      displayEl.textContent = Number.isFinite(result) ? result : 'Error';
+      currentInput = displayEl.textContent;
+    } catch {
+      displayEl.textContent = 'Error';
+      currentInput = '0';
+    }
+  }
+
+  // AI assistant code
+  const aiInput = document.getElementById('ai-input');
+  const aiButton = document.getElementById('ai-button');
+  const aiResponse = document.getElementById('ai-response');
+
+  aiButton.addEventListener('click', () => {
+    const query = aiInput.value.trim().toLowerCase();
+    if (!query) {
+      aiResponse.textContent = 'Please enter a question or expression.';
+      return;
+    }
+    const answer = processAIQuery(query);
+    aiResponse.textContent = answer;
+  });
+
+  function processAIQuery(input) {
+    // Basic parsing for arithmetic expressions and simple phrases
+    // Example queries:
+    // "add 5 and 3", "what is 12 divided by 4", "multiply 7 and 8", "subtract 10 from 15"
+    const numberPattern = /-?\d+(\.\d+)?/g;
+    const numbers = input.match(numberPattern);
+    if (!numbers || numbers.length < 2) {
+      return "I couldn't find two numbers to calculate.";
+    }
+    const num1 = parseFloat(numbers[0]);
+    const num2 = parseFloat(numbers[1]);
+
+    if (/add|plus/.test(input)) {
+      return `The result of adding ${num1} and ${num2} is ${num1 + num2}.`;
+    }
+    if (/subtract|minus/.test(input)) {
+      // "subtract 3 from 10" means 10 - 3, try to check word order
+      if (/from/.test(input)) {
+        return `The result of subtracting ${num1} from ${num2} is ${num2 - num1}.`;
+      }
+      return `The result of subtracting ${num2} from ${num1} is ${num1 - num2}.`;
+    }
+    if (/multiply|times/.test(input)) {
+      return `The result of multiplying ${num1} and ${num2} is ${num1 * num2}.`;
+    }
+    if (/divide|divided/.test(input)) {
+      if (num2 === 0) return "Cannot divide by zero.";
+      return `The result of dividing ${num1} by ${num2} is ${num1 / num2}.`;
+    }
+
+    // If user inputs a raw math expression (e.g. "5 + 3"), try to evaluate it directly
+    try {
+      // Replace words with symbols for safety
+      let expr = input.replace(/plus/g, '+')
+                      .replace(/minus/g, '-')
+                      .replace(/times/g, '*')
+                      .replace(/multiplied by/g, '*')
+                      .replace(/divide by|divided by/g, '/')
+                      .replace(/ /g, '');
+      // Check valid chars only
+      if (/^[0-9+\-*/().]+$/.test(expr)) {
+        const val = new Function('return ' + expr)();
+        if (Number.isFinite(val)) {
+          return `The result of "${input}" is ${val}.`;
+        }
+      }
+      return "Sorry, I couldn't understand the request.";
+    } catch {
+      return "Sorry, I couldn't understand the request.";
+    }
+  }
+</script>
+
+</body>
+</html>
